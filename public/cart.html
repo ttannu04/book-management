@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cart — BookStore</title>
+<link rel="stylesheet" href="style.css">
+<style>
+.cart-page{max-width:800px;margin:50px auto;padding:0 24px;}
+.cart-page h1{font-family:'Playfair Display',serif;font-size:2.2rem;color:var(--charcoal);margin-bottom:8px;}
+.cart-page .sub{color:var(--muted);margin-bottom:32px;}
+.empty-state{text-align:center;padding:80px 40px;background:var(--white);border-radius:var(--radius-lg);box-shadow:0 2px 12px var(--shadow);}
+.empty-state .icon{font-size:4rem;margin-bottom:20px;}
+.empty-state h3{font-family:'Playfair Display',serif;font-size:1.6rem;margin-bottom:10px;}
+.empty-state p{color:var(--muted);margin-bottom:24px;}
+</style>
+</head>
+<body>
+
+<div class="navbar">
+  <a href="customer.html" class="logo">📚 BookStore</a>
+  <div class="menu">
+    <a href="customer.html">Home</a>
+    <a href="shop.html">Shop</a>
+    <a href="orders.html">Orders</a>
+    <a href="request.html">Request</a>
+    <a href="cart.html" class="cart-link active">🛒 Cart <span id="cartCount">0</span></a>
+  </div>
+</div>
+
+<div class="cart-page">
+  <h1>Your Cart</h1>
+  <p class="sub">Review your items before placing an order.</p>
+
+  <div id="cartItems"></div>
+
+  <div id="cartFooter" style="display:none;" class="cart-total">
+    <div>
+      <p style="color:var(--muted);font-size:0.85rem;margin-bottom:4px;">Total Amount</p>
+      <strong id="totalAmount">₹0</strong>
+    </div>
+    <button class="btn btn-primary" onclick="placeOrder()" style="padding:14px 32px;">Place Order →</button>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+function showToast(msg,type='info'){ const t=document.getElementById('toast'); t.textContent=msg; t.className='toast '+type; setTimeout(()=>t.classList.add('show'),10); setTimeout(()=>t.classList.remove('show'),2800); }
+function updateCount(){ const el=document.getElementById("cartCount"); if(el) el.textContent=cart.length; }
+function renderCart(){
+  const container = document.getElementById("cartItems");
+  const footer = document.getElementById("cartFooter");
+  updateCount(); container.innerHTML="";
+  if(cart.length===0){
+    container.innerHTML='<div class="empty-state"><div class="icon">🛒</div><h3>Your cart is empty</h3><p>Looks like you haven\'t added any books yet.</p><a href="shop.html" class="btn btn-primary">Browse Books</a></div>';
+    footer.style.display="none"; return;
+  }
+  let total=0;
+  cart.forEach((item,i)=>{
+    total+=item.price;
+    container.innerHTML+=`<div class="cart-item"><div><h3>${item.title}</h3><p>₹${item.price}</p></div><button class="btn btn-danger btn-sm" onclick="removeItem(${i})">Remove</button></div>`;
+  });
+  document.getElementById("totalAmount").textContent="₹"+total;
+  footer.style.display="flex";
+}
+function removeItem(i){ cart.splice(i,1); localStorage.setItem("cart",JSON.stringify(cart)); renderCart(); showToast("Item removed","info"); }
+function placeOrder(){
+  cart.forEach(()=>fetch("/buy/1",{method:"POST"}).catch(()=>{}));
+  localStorage.removeItem("cart"); cart=[];
+  showToast("🎉 Order placed successfully!","success");
+  setTimeout(()=>window.location="orders.html",1500);
+}
+renderCart();
+</script>
+</body>
+</html>

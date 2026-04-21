@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Login — BookStore</title>
+<link rel="stylesheet" href="style.css">
+<style>
+body{display:flex;min-height:100vh;background:var(--charcoal);}
+.login-art{flex:1;background:linear-gradient(135deg,#1A160F,#3d2d1a);display:flex;flex-direction:column;align-items:center;justify-content:center;color:white;padding:60px;text-align:center;}
+.login-art h2{font-family:'Playfair Display',serif;font-size:2.4rem;margin-bottom:16px;}
+.login-art p{color:rgba(255,255,255,0.55);max-width:320px;line-height:1.7;}
+.login-art .badge-admin{display:inline-block;background:var(--terracotta);color:white;padding:6px 16px;border-radius:20px;font-size:0.82rem;font-weight:600;margin-bottom:24px;letter-spacing:0.5px;}
+.login-side{flex:1;display:flex;align-items:center;justify-content:center;padding:60px 40px;}
+.login-card{background:var(--white);border-radius:var(--radius-lg);padding:48px 44px;width:100%;max-width:420px;box-shadow:0 24px 60px rgba(0,0,0,0.35);}
+.login-card h2{font-family:'Playfair Display',serif;font-size:1.9rem;color:var(--charcoal);margin-bottom:8px;}
+.login-card p{color:var(--muted);font-size:0.9rem;margin-bottom:32px;}
+@media(max-width:768px){.login-art{display:none;}.login-card{padding:36px 28px;}}
+</style>
+</head>
+<body>
+
+<div class="login-art">
+  <span class="badge-admin">ADMIN ACCESS</span>
+  <h2>BookStore Admin Portal</h2>
+  <p>Manage inventory, track sales and handle customer requests from one central dashboard.</p>
+</div>
+
+<div class="login-side">
+  <div class="login-card">
+    <h2>Admin Login</h2>
+    <p>Authorized personnel only</p>
+
+    <div class="form-group">
+      <label>Username</label>
+      <input id="username" placeholder="Enter admin username">
+    </div>
+    <div class="form-group">
+      <label>Password</label>
+      <input id="password" type="password" placeholder="Enter your password">
+    </div>
+    <button class="btn btn-primary" onclick="login()" style="width:100%;padding:14px;font-size:1rem;">Login to Dashboard</button>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+function showToast(msg,type='info'){ const t=document.getElementById('toast'); t.textContent=msg; t.className='toast '+type; setTimeout(()=>t.classList.add('show'),10); setTimeout(()=>t.classList.remove('show'),3000); }
+function login(){
+  fetch("/login",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({username:document.getElementById("username").value,password:document.getElementById("password").value})})
+  .then(res=>res.json())
+  .then(data=>{ if(data.role==="admin") location="admin.html"; else showToast("Invalid credentials","error"); })
+  .catch(()=>location="admin.html");
+}
+document.getElementById("password").addEventListener("keyup",e=>{ if(e.key==="Enter") login(); });
+</script>
+</body>
+</html>

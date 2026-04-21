@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BookStore — Discover Your Next Read</title>
+<link rel="stylesheet" href="style.css">
+<style>
+.hero-section{background:linear-gradient(135deg,var(--charcoal) 0%,#3d2d1a 100%);color:white;padding:110px 60px;text-align:center;position:relative;overflow:hidden;}
+.hero-section::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");}
+.hero-section h1{font-family:'Playfair Display',serif;font-size:4rem;font-weight:700;margin-bottom:18px;line-height:1.15;position:relative;}
+.hero-section h1 em{color:var(--terracotta);font-style:italic;}
+.hero-section p{font-size:1.1rem;color:rgba(255,255,255,0.65);max-width:540px;margin:0 auto 36px;position:relative;}
+.hero-btns{display:flex;gap:16px;justify-content:center;position:relative;}
+.about-section{background:var(--white);padding:80px 60px;}
+.about-inner{max-width:900px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;}
+.about-text h2{font-family:'Playfair Display',serif;font-size:2.2rem;margin-bottom:18px;color:var(--charcoal);}
+.about-text p{color:var(--muted);line-height:1.8;margin-bottom:14px;}
+.about-visual{background:var(--cream);border-radius:var(--radius-lg);padding:40px;text-align:center;font-size:5rem;border:2px dashed var(--parchment);}
+.quote-section{padding:70px 60px;text-align:center;background:var(--terracotta);color:white;}
+.quote-section blockquote{font-family:'Playfair Display',serif;font-size:1.8rem;font-style:italic;max-width:700px;margin:0 auto;line-height:1.5;}
+.quote-section cite{display:block;margin-top:20px;font-size:0.9rem;opacity:0.75;font-style:normal;font-family:'DM Sans',sans-serif;}
+.stats-row{background:var(--charcoal);color:white;display:grid;grid-template-columns:repeat(3,1fr);}
+.stat-item{padding:50px 40px;text-align:center;border-right:1px solid rgba(255,255,255,0.08);}
+.stat-item:last-child{border-right:none;}
+.stat-num{font-family:'Playfair Display',serif;font-size:3rem;color:var(--terracotta);font-weight:700;}
+.stat-lbl{font-size:0.9rem;color:rgba(255,255,255,0.55);margin-top:6px;}
+@media(max-width:768px){.about-inner{grid-template-columns:1fr;}.stats-row{grid-template-columns:1fr;}.stat-item{border-right:none;border-bottom:1px solid rgba(255,255,255,0.08);padding:36px;}.hero-section{padding:80px 24px;}.hero-section h1{font-size:2.6rem;}.about-section{padding:60px 24px;}}
+</style>
+</head>
+<body>
+
+<div class="navbar">
+  <a href="index.html" class="logo">📚 BookStore</a>
+  <div class="menu">
+    <a href="index.html" class="active">Home</a>
+    <a href="customer-login.html">Shop</a>
+    <a href="admin-login.html">Admin</a>
+  </div>
+</div>
+
+<section class="hero-section">
+  <h1>Books That <em>Change</em><br>How You See the World</h1>
+  <p>Explore our curated collection of novels, business books, and self-development titles. Your next favourite book is waiting.</p>
+  <div class="hero-btns">
+    <a href="customer-login.html" class="btn btn-primary" style="padding:14px 32px;font-size:1rem;">Start Shopping</a>
+    <a href="#about" class="btn" style="background:rgba(255,255,255,0.1);color:white;border:1.5px solid rgba(255,255,255,0.25);padding:14px 32px;font-size:1rem;">Learn More</a>
+  </div>
+</section>
+
+<div class="stats-row">
+  <div class="stat-item"><div class="stat-num">500+</div><div class="stat-lbl">Books Available</div></div>
+  <div class="stat-item"><div class="stat-num">4.9★</div><div class="stat-lbl">Customer Rating</div></div>
+  <div class="stat-item"><div class="stat-num">12K+</div><div class="stat-lbl">Happy Readers</div></div>
+</div>
+
+<section class="about-section" id="about">
+  <div class="about-inner">
+    <div class="about-text">
+      <h2>More Than Just a Bookstore</h2>
+      <p>We handpick every title in our collection — from gripping novels to transformative business books and self-development gems that actually deliver.</p>
+      <p>Reading is how we grow, imagine and connect. We're here to make sure you always have the right book at the right moment.</p>
+      <a href="customer-login.html" class="btn btn-primary" style="margin-top:10px;">Browse Collection</a>
+    </div>
+    <div class="about-visual">📚<br><br>
+      <p style="font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--charcoal);margin-top:16px;">Curated with<br>love & care</p>
+    </div>
+  </div>
+</section>
+
+<section class="quote-section">
+  <blockquote>"A room without books is like a body without a soul."</blockquote>
+  <cite>— Marcus Tullius Cicero</cite>
+</section>
+
+<footer class="footer">
+  <p>© 2026 <span>BookStore</span> — All Rights Reserved &nbsp;|&nbsp; Made with 📚</p>
+</footer>
+
+<div class="floating-icons">
+  <span>📚</span><span>📖</span><span>📘</span><span>📗</span><span>📙</span><span>📕</span><span>✏️</span>
+</div>
+
+</body>
+</html>

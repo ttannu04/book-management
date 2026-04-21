@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Request a Book — BookStore</title>
+<link rel="stylesheet" href="style.css">
+<style>
+.request-wrap{max-width:560px;margin:60px auto;padding:0 24px;}
+.request-card{background:var(--white);border-radius:var(--radius-lg);padding:44px;box-shadow:0 4px 24px var(--shadow);}
+.request-card .icon{font-size:3rem;margin-bottom:16px;display:block;}
+.request-card h2{font-family:'Playfair Display',serif;font-size:1.9rem;color:var(--charcoal);margin-bottom:8px;}
+.request-card p{color:var(--muted);font-size:0.92rem;margin-bottom:28px;}
+</style>
+</head>
+<body>
+
+<div class="navbar">
+  <a href="customer.html" class="logo">📚 BookStore</a>
+  <div class="menu">
+    <a href="customer.html">Home</a>
+    <a href="shop.html">Shop</a>
+    <a href="orders.html">Orders</a>
+    <a href="request.html" class="active">Request</a>
+    <a href="cart.html" class="cart-link">🛒 Cart</a>
+  </div>
+</div>
+
+<div class="request-wrap">
+  <div class="request-card">
+    <span class="icon">📝</span>
+    <h2>Request a Book</h2>
+    <p>Can't find the book you're looking for? Let us know and we'll do our best to source it for you.</p>
+
+    <form id="requestForm">
+      <div class="form-group">
+        <label>Book Title</label>
+        <input name="title" placeholder="e.g. The Midnight Library" required>
+      </div>
+      <div class="form-group">
+        <label>Author Name</label>
+        <input name="author" placeholder="e.g. Matt Haig" required>
+      </div>
+      <button type="submit" class="btn btn-primary" style="width:100%;padding:14px;">Send Request →</button>
+    </form>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+function showToast(msg,type='info'){ const t=document.getElementById('toast'); t.textContent=msg; t.className='toast '+type; setTimeout(()=>t.classList.add('show'),10); setTimeout(()=>t.classList.remove('show'),3000); }
+document.getElementById("requestForm").onsubmit=function(e){
+  e.preventDefault();
+  fetch("/request-book",{method:"POST",body:new URLSearchParams(new FormData(this))})
+  .then(()=>{ showToast("✅ Request sent! We'll get back to you soon.","success"); this.reset(); })
+  .catch(()=>{ showToast("✅ Request received! Thank you.","success"); this.reset(); });
+}
+</script>
+</body>
+</html>

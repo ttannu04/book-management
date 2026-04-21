@@ -1,0 +1,53 @@
+<script>
+
+    let user=localStorage.getItem("user")
+    
+    if(!user){
+    
+    window.location="customer-login.html"
+    
+    }
+    
+    </script>
+<!DOCTYPE html>
+
+<html>
+<head>
+<title>Customer</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="navbar">
+
+        <h2 class="logo">📚 BookStore</h2>
+        
+        <div class="menu">
+        
+        <a href="customer.html">Home</a>
+        <a href="shop.html">Shop</a>
+        <a href="orders.html">Orders</a>
+        <a href="request.html">Request</a>
+        <a href="cart.html">Cart 🛒</a>
+        
+        <a href="#" onclick="logout()">Logout</a>
+        
+        </div>
+        
+        </div>
+
+<section class="hero">
+
+<h1>Welcome Customer</h1>
+
+<p>Explore books, place orders and request books.</p>
+
+<a href="shop.html">
+<button>Start Shopping</button>
+</a>
+
+</section>
+
+</body>
+</html>

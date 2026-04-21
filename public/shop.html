@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shop — BookStore</title>
+<link rel="stylesheet" href="style.css">
+<style>
+.shop-hero{background:var(--white);padding:60px 60px 40px;text-align:center;border-bottom:1px solid var(--parchment);}
+.shop-hero h1{font-family:'Playfair Display',serif;font-size:2.8rem;color:var(--charcoal);margin-bottom:14px;}
+.shop-hero p{color:var(--muted);margin-bottom:28px;}
+.shop-body{padding:40px 60px;}
+@media(max-width:768px){.shop-hero,.shop-body{padding:40px 20px;}}
+</style>
+</head>
+<body>
+
+<div class="navbar">
+  <a href="customer.html" class="logo">📚 BookStore</a>
+  <div class="menu">
+    <a href="customer.html">Home</a>
+    <a href="shop.html" class="active">Shop</a>
+    <a href="orders.html">Orders</a>
+    <a href="request.html">Request</a>
+    <a href="cart.html" class="cart-link">🛒 Cart <span id="cartCount">0</span></a>
+    <a href="#" onclick="logout()">Logout</a>
+  </div>
+</div>
+
+<div class="shop-hero">
+  <h1>Find Your Next Book</h1>
+  <p>Handpicked titles across every genre — something for every reader.</p>
+  <div class="search-wrap">
+    <input id="searchInput" type="text" placeholder="Search by title...">
+    <button id="searchBtn">Search</button>
+  </div>
+</div>
+
+<div class="shop-body">
+  <div class="filter-pills">
+    <button class="pill active" onclick="filterBooks('all',this)">All Books</button>
+    <button class="pill" onclick="filterBooks('novel',this)">📖 Novels</button>
+    <button class="pill" onclick="filterBooks('self',this)">🌱 Self Development</button>
+    <button class="pill" onclick="filterBooks('business',this)">💼 Business</button>
+  </div>
+
+  <div class="book-grid">
+    <div class="book" data-title="The Great Gatsby" data-category="novel">
+      <img src="https://covers.openlibrary.org/b/id/10523338-L.jpg" alt="The Great Gatsby">
+      <div class="book-info">
+        <span class="book-category">Novel</span>
+        <h3>The Great Gatsby</h3>
+        <p class="author">F. Scott Fitzgerald</p>
+        <p class="book-price">₹399</p>
+        <button class="btn btn-primary btn-sm" onclick="addToCart('The Great Gatsby',399)">Add to Cart</button>
+      </div>
+    </div>
+    <div class="book" data-title="Atomic Habits" data-category="self">
+      <img src="https://covers.openlibrary.org/b/id/11153277-L.jpg" alt="Atomic Habits">
+      <div class="book-info">
+        <span class="book-category">Self Development</span>
+        <h3>Atomic Habits</h3>
+        <p class="author">James Clear</p>
+        <p class="book-price">₹499</p>
+        <button class="btn btn-primary btn-sm" onclick="addToCart('Atomic Habits',499)">Add to Cart</button>
+      </div>
+    </div>
+    <div class="book" data-title="Rich Dad Poor Dad" data-category="business">
+      <img src="https://covers.openlibrary.org/b/id/8231856-L.jpg" alt="Rich Dad Poor Dad">
+      <div class="book-info">
+        <span class="book-category">Business</span>
+        <h3>Rich Dad Poor Dad</h3>
+        <p class="author">Robert Kiyosaki</p>
+        <p class="book-price">₹350</p>
+        <button class="btn btn-primary btn-sm" onclick="addToCart('Rich Dad Poor Dad',350)">Add to Cart</button>
+      </div>
+    </div>
+    <div class="book" data-title="Think and Grow Rich" data-category="business">
+      <img src="https://covers.openlibrary.org/b/id/10958383-L.jpg" alt="Think and Grow Rich">
+      <div class="book-info">
+        <span class="book-category">Business</span>
+        <h3>Think and Grow Rich</h3>
+        <p class="author">Napoleon Hill</p>
+        <p class="book-price">₹299</p>
+        <button class="btn btn-primary btn-sm" onclick="addToCart('Think and Grow Rich',299)">Add to Cart</button>
+      </div>
+    </div>
+    <div class="book" data-title="The Alchemist" data-category="novel">
+      <img src="https://covers.openlibrary.org/b/id/8225261-L.jpg" alt="The Alchemist">
+      <div class="book-info">
+        <span class="book-category">Novel</span>
+        <h3>The Alchemist</h3>
+        <p class="author">Paulo Coelho</p>
+        <p class="book-price">₹320</p>
+        <button class="btn btn-primary btn-sm" onclick="addToCart('The Alchemist',320)">Add to Cart</button>
+      </div>
+    </div>
+    <div class="book" data-title="Ikigai" data-category="self">
+      <img src="https://covers.openlibrary.org/b/id/10594765-L.jpg" alt="Ikigai">
+      <div class="book-info">
+        <span class="book-category">Self Development</span>
+        <h3>Ikigai</h3>
+        <p class="author">Héctor García</p>
+        <p class="book-price">₹410</p>
+        <button class="btn btn-primary btn-sm" onclick="addToCart('Ikigai',410)">Add to Cart</button>
+      </div>
+    </div>
+    <div class="book" data-title="Deep Work" data-category="self">
+      <img src="https://covers.openlibrary.org/b/id/10521270-L.jpg" alt="Deep Work">
+      <div class="book-info">
+        <span class="book-category">Self Development</span>
+        <h3>Deep Work</h3>
+        <p class="author">Cal Newport</p>
+        <p class="book-price">₹380</p>
+        <button class="btn btn-primary btn-sm" onclick="addToCart('Deep Work',380)">Add to Cart</button>
+      </div>
+    </div>
+    <div class="book" data-title="Zero to One" data-category="business">
+      <img src="https://covers.openlibrary.org/b/id/10438141-L.jpg" alt="Zero to One">
+      <div class="book-info">
+        <span class="book-category">Business</span>
+        <h3>Zero to One</h3>
+        <p class="author">Peter Thiel</p>
+        <p class="book-price">₹420</p>
+        <button class="btn btn-primary btn-sm" onclick="addToCart('Zero to One',420)">Add to Cart</button>
+      </div>
+    </div>
+    <div class="book" data-title="Harry Potter" data-category="novel">
+      <img src="https://covers.openlibrary.org/b/id/8235116-L.jpg" alt="Harry Potter">
+      <div class="book-info">
+        <span class="book-category">Novel</span>
+        <h3>Harry Potter</h3>
+        <p class="author">J.K. Rowling</p>
+        <p class="book-price">₹550</p>
+        <button class="btn btn-primary btn-sm" onclick="addToCart('Harry Potter',550)">Add to Cart</button>
+      </div>
+    </div>
+    <div class="book" data-title="The Psychology of Money" data-category="business">
+      <img src="https://covers.openlibrary.org/b/id/10292578-L.jpg" alt="The Psychology of Money">
+      <div class="book-info">
+        <span class="book-category">Business</span>
+        <h3>The Psychology of Money</h3>
+        <p class="author">Morgan Housel</p>
+        <p class="book-price">₹470</p>
+        <button class="btn btn-primary btn-sm" onclick="addToCart('The Psychology of Money',470)">Add to Cart</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer class="footer"><p>© 2026 <span style="color:var(--terracotta)">BookStore</span></p></footer>
+<div id="toast" class="toast"></div>
+
+<script>
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+function updateCount(){ const el=document.getElementById("cartCount"); if(el) el.textContent=cart.length; }
+function showToast(msg,type='info'){ const t=document.getElementById('toast'); t.textContent=msg; t.className='toast '+type; setTimeout(()=>t.classList.add('show'),10); setTimeout(()=>t.classList.remove('show'),2800); }
+function addToCart(title,price){ cart.push({title,price}); localStorage.setItem("cart",JSON.stringify(cart)); updateCount(); showToast('📚 '+title+' added to cart!','success'); }
+function filterBooks(cat, btn){ document.querySelectorAll('.pill').forEach(p=>p.classList.remove('active')); btn.classList.add('active'); document.querySelectorAll('.book').forEach(b=>{ b.style.display=(cat==='all'||b.dataset.category===cat)?'flex':'none'; }); }
+document.getElementById("searchBtn").addEventListener("click",()=>{ const q=document.getElementById("searchInput").value.toLowerCase(); document.querySelectorAll(".book").forEach(b=>{ b.style.display=b.dataset.title.toLowerCase().includes(q)?'flex':'none'; }); });
+document.getElementById("searchInput").addEventListener("keyup",e=>{ if(e.key==="Enter") document.getElementById("searchBtn").click(); });
+function logout(){ localStorage.clear(); window.location="customer-login.html"; }
+updateCount();
+</script>
+</body>
+</html>

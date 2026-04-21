@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard — BookStore</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<div class="sidebar">
+  <div class="sidebar-brand">
+    <h2>📚 BookStore</h2>
+    <p>Admin Panel</p>
+  </div>
+  <nav class="sidebar-nav">
+    <a href="admin.html" class="active"><span class="nav-icon">📊</span> Dashboard</a>
+    <a href="manage-books.html"><span class="nav-icon">📚</span> Manage Books</a>
+    <a href="sales.html"><span class="nav-icon">💰</span> Sales Report</a>
+  </nav>
+  <div class="sidebar-footer">
+    <a onclick="logout()" style="cursor:pointer;"><span>🚪</span> Logout</a>
+  </div>
+</div>
+
+<div class="main">
+  <div class="main-header">
+    <div>
+      <h1>Dashboard</h1>
+      <p id="welcome-msg">Welcome back, Admin — here's what's happening.</p>
+    </div>
+    <button class="btn btn-outline" onclick="loadDashboard()">↻ Refresh</button>
+  </div>
+
+  <div class="main-content">
+    <div class="stat-cards">
+      <div class="stat-card">
+        <div class="stat-label">Total Sales</div>
+        <div class="stat-value" id="sales">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Monthly Sales</div>
+        <div class="stat-value" id="monthSales">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Total Revenue</div>
+        <div class="stat-value" id="revenue">—</div>
+      </div>
+    </div>
+
+    <div class="chart-box">
+      <h3>Sales Analytics</h3>
+      <canvas id="salesChart" height="100"></canvas>
+    </div>
+
+    <div class="chart-box">
+      <h3>Customer Book Requests</h3>
+      <ul id="requests"><li>Loading requests...</li></ul>
+    </div>
+  </div>
+</div>
+
+<script src="dashboard.js"></script>
+<script>
+  // ── Session guard: redirect to login if not authenticated ──
+  if (localStorage.getItem('adminLoggedIn') !== 'true') {
+    window.location.href = 'admin-login.html';
+  }
+
+  // Show logged-in name
+  const adminName = localStorage.getItem('adminName') || 'Admin';
+  document.getElementById('welcome-msg').textContent =
+    'Welcome back, ' + adminName + ' — here\'s what\'s happening.';
+
+  function logout() {
+    fetch("/logout").catch(() => {});
+    localStorage.removeItem('adminLoggedIn');
+    localStorage.removeItem('adminName');
+    window.location.href = 'admin-login.html';
+  }
+
+  window.onload = function () {
+    loadDashboard();
+    loadRequests();
+    loadChart();
+  };
+</script>
+</body>
+</html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manage Books — BookStore</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="sidebar">
+  <div class="sidebar-brand">
+    <h2>📚 BookStore</h2>
+    <p>Admin Panel</p>
+  </div>
+  <nav class="sidebar-nav">
+    <a href="admin.html"><span class="nav-icon">📊</span> Dashboard</a>
+    <a href="manage-books.html" class="active"><span class="nav-icon">📚</span> Manage Books</a>
+    <a href="sales.html"><span class="nav-icon">💰</span> Sales Report</a>
+  </nav>
+  <div class="sidebar-footer">
+    <a onclick="logout()"><span>🚪</span> Logout</a>
+  </div>
+</div>
+
+<div class="main">
+  <div class="main-header">
+    <div>
+      <h1>Manage Books</h1>
+      <p>Add new titles or remove existing ones from the catalogue.</p>
+    </div>
+  </div>
+
+  <div class="main-content">
+    <div class="panel">
+      <h3>➕ Add New Book</h3>
+      <form id="bookForm" style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <div class="form-group">
+          <label>Book Title</label>
+          <input name="title" placeholder="Enter book title" required>
+        </div>
+        <div class="form-group">
+          <label>Author</label>
+          <input name="author" placeholder="Enter author name" required>
+        </div>
+        <div class="form-group">
+          <label>Category</label>
+          <select name="category">
+            <option>Novel</option>
+            <option>Business</option>
+            <option>Self Development</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Price (₹)</label>
+          <input name="price" type="number" placeholder="e.g. 499" required>
+        </div>
+        <div class="form-group" style="grid-column:1/-1">
+          <label>Cover Image</label>
+          <input type="file" name="image" required>
+        </div>
+        <div style="grid-column:1/-1">
+          <button type="submit" class="btn btn-primary">Add Book to Catalogue</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="table-wrap">
+      <div class="table-wrap-header">
+        <h3>📚 Book Catalogue</h3>
+      </div>
+      <table>
+        <thead>
+          <tr><th>Cover</th><th>Title</th><th>Author</th><th>Category</th><th>Price</th><th>Action</th></tr>
+        </thead>
+        <tbody id="books"><tr><td colspan="6" style="text-align:center;padding:30px;color:var(--muted)">Loading books...</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+function showToast(msg,type='info'){ const t=document.getElementById('toast'); t.textContent=msg; t.className='toast '+type; setTimeout(()=>t.classList.add('show'),10); setTimeout(()=>t.classList.remove('show'),2800); }
+function logout(){ fetch("/logout").catch(()=>{}); localStorage.clear(); window.location="login.html"; }
+function loadBooks(){
+  fetch("/books").then(res=>res.json()).then(data=>{
+    let html="";
+    data.forEach(b=>{ html+=`<tr><td><img src="/uploads/${b.image}"></td><td><strong>${b.title}</strong></td><td>${b.author}</td><td><span class="badge badge-primary">${b.category}</span></td><td>₹${b.price}</td><td><button class="btn btn-danger btn-sm" onclick="deleteBook(${b.id})">Delete</button></td></tr>`; });
+    document.getElementById("books").innerHTML=html||'<tr><td colspan="6" style="text-align:center;padding:30px;color:var(--muted)">No books added yet.</td></tr>';
+  }).catch(()=>{ document.getElementById("books").innerHTML='<tr><td colspan="6" style="text-align:center;padding:30px;color:var(--muted)">Connect to backend to load books.</td></tr>'; });
+}
+document.getElementById("bookForm").onsubmit=function(e){
+  e.preventDefault();
+  fetch("/add-book",{method:"POST",body:new FormData(this)}).then(()=>{ showToast("✅ Book added successfully!","success"); this.reset(); loadBooks(); }).catch(()=>showToast("❌ Error adding book","error"));
+}
+function deleteBook(id){ if(!confirm("Delete this book?"))return; fetch("/delete-book/"+id,{method:"DELETE"}).then(()=>{ showToast("Book deleted","info"); loadBooks(); }); }
+loadBooks();
+</script>
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Login — BookStore</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  body { display:flex; align-items:center; justify-content:center; min-height:100vh; background:#1e1a14; }
+  .login-box { background:#fff; border-radius:14px; padding:40px 36px; width:100%; max-width:400px; box-shadow:0 8px 40px rgba(0,0,0,0.3); }
+  .login-box h2 { font-family:'Playfair Display',serif; font-size:1.8rem; color:#2c2416; margin-bottom:6px; text-align:center; }
+  .login-box p  { text-align:center; color:#7a6e60; font-size:0.9rem; margin-bottom:28px; }
+  .form-group   { margin-bottom:18px; }
+  .form-group label { display:block; font-size:0.8rem; font-weight:600; color:#2c2416; margin-bottom:6px; text-transform:uppercase; letter-spacing:0.05em; }
+  .form-group input { width:100%; padding:11px 14px; border:1.5px solid #e8ddd0; border-radius:9px; font-size:0.95rem; color:#2c2416; background:#f7f2eb; outline:none; transition:border-color .2s,box-shadow .2s; box-sizing:border-box; }
+  .form-group input:focus { border-color:#c0603a; box-shadow:0 0 0 3px rgba(192,96,58,.12); background:#fff; }
+  .btn-login { width:100%; padding:13px; background:#c0603a; color:#fff; border:none; border-radius:9px; font-size:1rem; font-weight:600; cursor:pointer; margin-top:6px; transition:background .2s; }
+  .btn-login:hover { background:#a04e2e; }
+  .error-msg { background:#fdf0ed; border:1px solid #f0c0b0; color:#a03020; border-radius:8px; padding:9px 13px; font-size:0.86rem; margin-bottom:16px; display:none; }
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="login-box">
+  <h2>📚 BookStore</h2>
+  <p>Admin Panel — Sign In</p>
+  <div class="error-msg" id="err">⚠️ Invalid username or password.</div>
+  <div class="form-group">
+    <label>Username</label>
+    <input type="text" id="uname" placeholder="Enter username" autocomplete="username">
+  </div>
+  <div class="form-group">
+    <label>Password</label>
+    <input type="password" id="pwd" placeholder="Enter password" autocomplete="current-password">
+  </div>
+  <button class="btn-login" onclick="doLogin()">Sign In</button>
+</div>
+
+<script>
+  // If already logged in, go straight to dashboard
+  if (localStorage.getItem('adminLoggedIn') === 'true') {
+    window.location.href = 'admin.html';
+  }
+
+  document.addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+
+  function doLogin() {
+    const u = document.getElementById('uname').value.trim();
+    const p = document.getElementById('pwd').value;
+    const err = document.getElementById('err');
+
+    // ── Hardcoded admin credentials ──
+    if (u === 'tannu123' && p === '1234') {
+      localStorage.setItem('adminLoggedIn', 'true');
+      localStorage.setItem('adminName', 'Tannu');
+      window.location.href = 'admin.html';
+    } else {
+      err.style.display = 'block';
+      document.getElementById('pwd').value = '';
+    }
+  }
+</script>
+</body>
+</html>
