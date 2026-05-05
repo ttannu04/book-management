@@ -326,13 +326,27 @@ const CATS = ['Fiction','Non-Fiction','Science','History','Technology','Self-Hel
 const CAT_COLORS = ['#378ADD','#1D9E75','#BA7517','#D4537E','#7F77DD','#D85A30','#3B6D11','#E24B4A'];
 
 let books = [
-  {id:1, title:'The Alchemist', author:'Paulo Coelho', category:'Fiction', price:349, stock:45, isbn:'', desc:'A philosophical novel.', sold:0},
-  {id:2, title:'Sapiens', author:'Yuval Noah Harari', category:'History', price:499, stock:30, isbn:'', desc:'A brief history of humankind.', sold:0},
-  {id:3, title:'Atomic Habits', author:'James Clear', category:'Self-Help', price:399, stock:60, isbn:'', desc:'Build better habits.', sold:0},
-  {id:4, title:'Clean Code', author:'Robert C. Martin', category:'Technology', price:649, stock:20, isbn:'', desc:'Writing maintainable code.', sold:0},
-  {id:5, title:'The God of Small Things', author:'Arundhati Roy', category:'Fiction', price:299, stock:35, isbn:'', desc:'Booker Prize winner.', sold:0},
+  {id:1, title:'The Great Gatsby', author:'F. Scott Fitzgerald', category:'Novel', price:399, stock:40, isbn:'', desc:'Classic novel', sold:0},
+  
+  {id:2, title:'Atomic Habits', author:'James Clear', category:'Self-Help', price:499, stock:60, isbn:'', desc:'Build better habits', sold:0},
+  
+  {id:3, title:'Rich Dad Poor Dad', author:'Robert Kiyosaki', category:'Business', price:350, stock:50, isbn:'', desc:'Financial education book', sold:0},
+  
+  {id:4, title:'Think and Grow Rich', author:'Napoleon Hill', category:'Business', price:299, stock:45, isbn:'', desc:'Success mindset book', sold:0},
+  
+  {id:5, title:'The Alchemist', author:'Paulo Coelho', category:'Novel', price:320, stock:55, isbn:'', desc:'Philosophical novel', sold:0},
+  
+  {id:6, title:'Ikigai', author:'Héctor García', category:'Self-Development', price:410, stock:35, isbn:'', desc:'Japanese concept of purpose', sold:0},
+  
+  {id:7, title:'Deep Work', author:'Cal Newport', category:'Self-Development', price:380, stock:30, isbn:'', desc:'Focus and productivity', sold:0},
+  
+  {id:8, title:'Zero to One', author:'Peter Thiel', category:'Business', price:420, stock:25, isbn:'', desc:'Startup insights', sold:0},
+  
+  {id:9, title:'Harry Potter', author:'J.K. Rowling', category:'Novel', price:550, stock:70, isbn:'', desc:'Fantasy novel', sold:0},
+  
+  {id:10, title:'The Psychology of Money', author:'Morgan Housel', category:'Business', price:470, stock:45, isbn:'', desc:'Money behavior insights', sold:0}
 ];
-let nextId = 6;
+let nextId = 11;
 let sales = [];
 
 const todayStr = () => new Date().toISOString().slice(0,10);
