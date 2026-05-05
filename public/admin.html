@@ -1,90 +1,559 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin Dashboard — BookStore</title>
-<link rel="stylesheet" href="style.css">
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<title>BookStore Admin Panel</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --primary:#c56a3d;--primary-dark:#a5522c;--primary-light:#f3e1d9;
+  --bg:#fffaf6;--card:#fff;--soft:#f7efe9;
+  --txt:#1e1e1e;--muted:#888;--border:#e8ddd6;
+  --green:#3B6D11;--green-bg:#EAF3DE;
+  --red:#A32D2D;--red-bg:#FCEBEB;
+  --blue:#185FA5;--blue-bg:#E6F1FB;
+  --amber:#854F0B;--amber-bg:#FAEEDA;
+  --r:12px;--font:'DM Sans',sans-serif;
+}
+body{font-family:var(--font);background:var(--bg);color:var(--txt);height:100vh;overflow:hidden}
+#app{display:flex;height:100vh;width:100%}
+
+.sidebar{width:200px;background:var(--card);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0}
+.brand{padding:20px 16px 14px;border-bottom:1px solid var(--border)}
+.brand-name{font-family:'DM Serif Display',serif;font-size:18px;color:var(--primary);display:flex;align-items:center;gap:8px}
+.brand-sub{font-size:11px;color:var(--muted);margin-top:2px;letter-spacing:.5px;text-transform:uppercase}
+.nav{padding:12px 8px;flex:1;display:flex;flex-direction:column;gap:3px}
+.nav-item{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:8px;cursor:pointer;font-size:13px;color:var(--muted);border:none;background:none;width:100%;text-align:left;transition:all .15s}
+.nav-item:hover{background:var(--primary-light);color:var(--primary)}
+.nav-item.active{background:var(--primary-light);color:var(--primary);font-weight:600}
+.nav-icon{width:16px;height:16px;flex-shrink:0}
+.nav-section{font-size:10px;color:var(--muted);padding:8px 10px 3px;letter-spacing:.8px;text-transform:uppercase}
+.sidebar-footer{padding:10px 8px;border-top:1px solid var(--border)}
+
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.topbar{padding:12px 20px;background:var(--card);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.topbar-left h2{font-size:17px;font-weight:600}
+.topbar-left p{font-size:12px;color:var(--muted);margin-top:1px}
+.topbar-right{display:flex;gap:8px;align-items:center}
+
+.page{display:none;flex:1;overflow-y:auto;padding:20px}
+.page.active{display:block}
+
+.btn{padding:7px 16px;border-radius:8px;font-size:13px;cursor:pointer;border:1px solid var(--border);background:var(--card);color:var(--txt);font-family:var(--font);transition:all .15s}
+.btn:hover{background:var(--soft)}
+.btn-primary{background:var(--primary);color:#fff;border:none}
+.btn-primary:hover{background:var(--primary-dark)}
+.btn-sm{padding:5px 12px;font-size:12px}
+.btn-danger{background:var(--red-bg);color:var(--red);border:none;padding:4px 10px;font-size:11px}
+.btn-success{background:var(--green-bg);color:var(--green);border:none}
+.btn-success:hover{background:#C0DD97}
+
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:16px 18px;margin-bottom:14px}
+.card h3{font-size:14px;font-weight:600;margin-bottom:12px;color:var(--txt)}
+
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px}
+.stat-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+.stat-val{font-size:26px;font-weight:600;margin:4px 0 0;color:var(--txt)}
+.stat-sub{font-size:11px;color:var(--muted);margin-top:2px}
+
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.two-col-65{display:grid;grid-template-columns:1.5fr 1fr;gap:14px;margin-bottom:14px}
+
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;padding:8px 10px;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.4px;border-bottom:1px solid var(--border);font-weight:500}
+td{padding:10px 10px;border-bottom:1px solid var(--border);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--soft)}
+.empty{color:var(--muted);font-style:italic;text-align:center;padding:20px}
+
+.badge{display:inline-block;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:500}
+.badge-cat{background:var(--primary-light);color:var(--primary-dark)}
+.badge-sold{background:var(--green-bg);color:var(--green)}
+
+label{font-size:12px;color:var(--muted);display:block;margin-bottom:4px;font-weight:500}
+input[type=text],input[type=number],select,textarea{
+  font-size:13px;padding:8px 11px;border:1px solid var(--border);border-radius:8px;width:100%;font-family:var(--font);background:var(--card);color:var(--txt);transition:border .15s
+}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--primary)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.form-group{margin-bottom:12px}
+.form-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:4px}
+
+.search-wrap{display:flex;gap:8px;margin-bottom:14px}
+.search-wrap input{flex:1}
+
+.toast{position:fixed;bottom:20px;right:20px;padding:10px 18px;border-radius:10px;font-size:13px;opacity:0;pointer-events:none;transition:.25s;z-index:999;border:1px solid transparent}
+.toast.show{opacity:1}
+.toast-ok{background:var(--green-bg);color:var(--green);border-color:#C0DD97}
+.toast-err{background:var(--red-bg);color:var(--red);border-color:#F09595}
+
+#catBar{display:flex;flex-direction:column;gap:6px}
+.bar-row{display:flex;align-items:center;gap:8px}
+.bar-label{font-size:11px;color:var(--muted);width:70px;text-align:right}
+.bar-track{flex:1;background:var(--soft);border-radius:4px;height:10px;overflow:hidden}
+.bar-fill{height:100%;border-radius:4px;background:var(--primary);transition:width .5s}
+.bar-count{font-size:11px;font-weight:600;min-width:18px}
+</style>
 </head>
 <body>
+<div id="app">
 
-<div class="sidebar">
-  <div class="sidebar-brand">
-    <h2>📚 BookStore</h2>
-    <p>Admin Panel</p>
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="brand">
+      <div class="brand-name">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <rect x="3" y="2" width="9" height="13" rx="1.5" fill="#c56a3d"/>
+          <rect x="8" y="5" width="9" height="13" rx="1.5" fill="#f3e1d9"/>
+          <rect x="5.5" y="7" width="5" height="1.5" rx=".75" fill="#fff"/>
+          <rect x="5.5" y="10" width="3" height="1.5" rx=".75" fill="#fff"/>
+        </svg>
+        BookStore
+      </div>
+      <div class="brand-sub">Admin Panel</div>
+    </div>
+    <nav class="nav">
+      <div class="nav-section">Overview</div>
+      <button class="nav-item active" onclick="goto('dashboard',this)">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
+          <rect x="1" y="1" width="6" height="6" rx="1" fill="currentColor" opacity=".7"/>
+          <rect x="9" y="1" width="6" height="6" rx="1" fill="currentColor" opacity=".7"/>
+          <rect x="1" y="9" width="6" height="6" rx="1" fill="currentColor"/>
+          <rect x="9" y="9" width="6" height="6" rx="1" fill="currentColor" opacity=".4"/>
+        </svg>
+        Dashboard
+      </button>
+      <div class="nav-section">Inventory</div>
+      <button class="nav-item" onclick="goto('addbook',this)">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
+          <circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.3"/>
+          <path d="M8 5v6M5 8h6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        Add Book
+      </button>
+      <button class="nav-item" onclick="goto('manage',this)">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
+          <path d="M2 3h12M2 8h8M2 13h10" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+        </svg>
+        Manage Books
+      </button>
+      <div class="nav-section">Sales</div>
+      <button class="nav-item" onclick="goto('sell',this)">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
+          <path d="M2 2h2l2 7h7l1-4H6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="7" cy="13" r="1" fill="currentColor"/>
+          <circle cx="12" cy="13" r="1" fill="currentColor"/>
+        </svg>
+        Sell Books
+      </button>
+    </nav>
+    <div class="sidebar-footer">
+      <button class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
+          <path d="M6 2H3a1 1 0 00-1 1v10a1 1 0 001 1h3M10 11l3-3-3-3M13 8H6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Logout
+      </button>
+    </div>
   </div>
-  <nav class="sidebar-nav">
-    <a href="admin.html" class="active"><span class="nav-icon">📊</span> Dashboard</a>
-    <a href="manage-books.html"><span class="nav-icon">📚</span> Manage Books</a>
-    <a href="sales.html"><span class="nav-icon">💰</span> Sales Report</a>
-  </nav>
-  <div class="sidebar-footer">
-    <a onclick="logout()" style="cursor:pointer;"><span>🚪</span> Logout</a>
+
+  <!-- MAIN CONTENT -->
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-left">
+        <h2 id="pg-title">Dashboard</h2>
+        <p id="pg-sub">Your bookstore at a glance</p>
+      </div>
+      <div class="topbar-right" id="topbar-actions"></div>
+    </div>
+
+    <!-- DASHBOARD PAGE -->
+    <div class="page active" id="pg-dashboard">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">Today's Sales</div>
+          <div class="stat-val" id="s-today">₹0</div>
+          <div class="stat-sub" id="s-today-books">0 books sold</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">This Month</div>
+          <div class="stat-val" id="s-month">₹0</div>
+          <div class="stat-sub" id="s-month-books">0 books sold</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">This Year</div>
+          <div class="stat-val" id="s-year">₹0</div>
+          <div class="stat-sub" id="s-year-books">0 books sold</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Total Revenue</div>
+          <div class="stat-val" id="s-total">₹0</div>
+          <div class="stat-sub" id="s-total-books">0 books sold</div>
+        </div>
+      </div>
+      <div class="two-col-65">
+        <div class="card" style="margin-bottom:0">
+          <h3>Recent Sales</h3>
+          <table>
+            <thead><tr><th>Book</th><th>Qty</th><th>Amount</th><th>Date</th></tr></thead>
+            <tbody id="recent-sales-body"><tr><td colspan="4" class="empty">No sales yet</td></tr></tbody>
+          </table>
+        </div>
+        <div class="card" style="margin-bottom:0">
+          <h3>Books by Category</h3>
+          <div id="catBar"></div>
+        </div>
+      </div>
+      <div style="height:14px"></div>
+      <div class="card">
+        <h3>Inventory Overview</h3>
+        <table>
+          <thead><tr><th>Title</th><th>Author</th><th>Category</th><th>Price</th><th>In Stock</th><th>Sold</th></tr></thead>
+          <tbody id="inv-body"><tr><td colspan="6" class="empty">No books yet</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ADD BOOK PAGE -->
+    <div class="page" id="pg-addbook">
+      <div style="max-width:620px;margin:0 auto">
+        <div class="card">
+          <h3>Book Details</h3>
+          <div class="form-row">
+            <div class="form-group"><label>Title *</label><input type="text" id="f-title" placeholder="e.g. The Alchemist"></div>
+            <div class="form-group"><label>Author *</label><input type="text" id="f-author" placeholder="e.g. Paulo Coelho"></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Category</label>
+              <select id="f-cat">
+                <option>Fiction</option><option>Non-Fiction</option><option>Science</option>
+                <option>History</option><option>Technology</option><option>Self-Help</option>
+                <option>Biography</option><option>Children</option>
+              </select>
+            </div>
+            <div class="form-group"><label>Price (₹) *</label><input type="number" id="f-price" placeholder="299"></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>Stock Qty</label><input type="number" id="f-stock" placeholder="50"></div>
+            <div class="form-group"><label>ISBN</label><input type="text" id="f-isbn" placeholder="978-..."></div>
+          </div>
+          <div class="form-group"><label>Description</label><input type="text" id="f-desc" placeholder="Short description..."></div>
+          <div class="form-actions">
+            <button class="btn" onclick="clearForm()">Clear</button>
+            <button class="btn btn-primary" onclick="addBook()">Save Book</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MANAGE BOOKS PAGE -->
+    <div class="page" id="pg-manage">
+      <div class="search-wrap">
+        <input type="text" id="search-q" placeholder="Search by title, author or category..." oninput="renderManage()">
+        <button class="btn" onclick="document.getElementById('search-q').value='';renderManage()">Clear</button>
+      </div>
+      <div class="card">
+        <h3 id="manage-count">All Books (0)</h3>
+        <table>
+          <thead><tr><th>#</th><th>Title</th><th>Author</th><th>Category</th><th>Price</th><th>Stock</th><th>Sold</th><th></th></tr></thead>
+          <tbody id="manage-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- SELL BOOKS PAGE -->
+    <div class="page" id="pg-sell">
+      <div style="max-width:680px;margin:0 auto">
+        <div class="card">
+          <h3>Sell Books</h3>
+          <div class="form-group">
+            <label>Select Book</label>
+            <select id="sell-book-sel" onchange="updateSellPreview()">
+              <option value="">-- Choose a book --</option>
+            </select>
+          </div>
+          <div id="sell-preview" style="display:none;background:var(--soft);border-radius:8px;padding:12px 14px;margin-bottom:12px">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div>
+                <div style="font-size:13px;font-weight:600" id="sp-title"></div>
+                <div style="font-size:11px;color:var(--muted);margin-top:2px" id="sp-meta"></div>
+              </div>
+              <div style="text-align:right">
+                <div style="font-size:11px;color:var(--muted)">Unit Price</div>
+                <div style="font-size:16px;font-weight:600;color:var(--primary)" id="sp-price"></div>
+              </div>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Quantity *</label>
+              <input type="number" id="sell-qty" min="1" value="1" oninput="calcTotal()">
+            </div>
+            <div class="form-group">
+              <label>Total Amount</label>
+              <input type="text" id="sell-total-display" readonly style="background:var(--soft);font-weight:600;color:var(--primary)">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Customer Name (optional)</label>
+            <input type="text" id="sell-customer" placeholder="Walk-in customer">
+          </div>
+          <div class="form-actions">
+            <button class="btn" onclick="clearSell()">Clear</button>
+            <button class="btn btn-success" onclick="recordSale()">Record Sale</button>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Recent Transactions</h3>
+          <table>
+            <thead><tr><th>Book</th><th>Customer</th><th>Qty</th><th>Amount</th><th>Date</th></tr></thead>
+            <tbody id="sell-history-body"><tr><td colspan="5" class="empty">No sales recorded yet</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>
 
-<div class="main">
-  <div class="main-header">
-    <div>
-      <h1>Dashboard</h1>
-      <p id="welcome-msg">Welcome back, Admin — here's what's happening.</p>
-    </div>
-    <button class="btn btn-outline" onclick="loadDashboard()">↻ Refresh</button>
-  </div>
+<div class="toast" id="toast"></div>
 
-  <div class="main-content">
-    <div class="stat-cards">
-      <div class="stat-card">
-        <div class="stat-label">Total Sales</div>
-        <div class="stat-value" id="sales">—</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">Monthly Sales</div>
-        <div class="stat-value" id="monthSales">—</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">Total Revenue</div>
-        <div class="stat-value" id="revenue">—</div>
-      </div>
-    </div>
-
-    <div class="chart-box">
-      <h3>Sales Analytics</h3>
-      <canvas id="salesChart" height="100"></canvas>
-    </div>
-
-    <div class="chart-box">
-      <h3>Customer Book Requests</h3>
-      <ul id="requests"><li>Loading requests...</li></ul>
-    </div>
-  </div>
-</div>
-
-<script src="dashboard.js"></script>
 <script>
-  // ── Session guard: redirect to login if not authenticated ──
-  if (localStorage.getItem('adminLoggedIn') !== 'true') {
-    window.location.href = 'admin-login.html';
+const CATS = ['Fiction','Non-Fiction','Science','History','Technology','Self-Help','Biography','Children'];
+const CAT_COLORS = ['#378ADD','#1D9E75','#BA7517','#D4537E','#7F77DD','#D85A30','#3B6D11','#E24B4A'];
+
+let books = [
+  {id:1, title:'The Alchemist', author:'Paulo Coelho', category:'Fiction', price:349, stock:45, isbn:'', desc:'A philosophical novel.', sold:0},
+  {id:2, title:'Sapiens', author:'Yuval Noah Harari', category:'History', price:499, stock:30, isbn:'', desc:'A brief history of humankind.', sold:0},
+  {id:3, title:'Atomic Habits', author:'James Clear', category:'Self-Help', price:399, stock:60, isbn:'', desc:'Build better habits.', sold:0},
+  {id:4, title:'Clean Code', author:'Robert C. Martin', category:'Technology', price:649, stock:20, isbn:'', desc:'Writing maintainable code.', sold:0},
+  {id:5, title:'The God of Small Things', author:'Arundhati Roy', category:'Fiction', price:299, stock:35, isbn:'', desc:'Booker Prize winner.', sold:0},
+];
+let nextId = 6;
+let sales = [];
+
+const todayStr = () => new Date().toISOString().slice(0,10);
+const monthStr = () => new Date().toISOString().slice(0,7);
+const yearStr  = () => new Date().getFullYear().toString();
+
+const pages = {
+  dashboard: {title:'Dashboard', sub:'Your bookstore at a glance'},
+  addbook:   {title:'Add New Book', sub:'Fill in the details to add to inventory'},
+  manage:    {title:'Manage Books', sub:'View, search and remove books'},
+  sell:      {title:'Sell Books', sub:'Record a sale manually'},
+};
+
+function goto(id, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('pg-' + id).classList.add('active');
+  if (btn) btn.classList.add('active');
+  document.getElementById('pg-title').textContent = pages[id].title;
+  document.getElementById('pg-sub').textContent = pages[id].sub;
+  const ta = document.getElementById('topbar-actions');
+  ta.innerHTML = '';
+  if (id === 'dashboard') {
+    const b = document.createElement('button');
+    b.className = 'btn btn-sm';
+    b.textContent = '+ Add Book';
+    b.onclick = () => goto('addbook', document.querySelectorAll('.nav-item')[1]);
+    ta.appendChild(b);
+    updateDashboard();
+  }
+  if (id === 'manage') renderManage();
+  if (id === 'sell') updateSellDropdown();
+}
+
+function addBook() {
+  const t = document.getElementById('f-title').value.trim();
+  const a = document.getElementById('f-author').value.trim();
+  const c = document.getElementById('f-cat').value;
+  const p = parseFloat(document.getElementById('f-price').value);
+  const s = parseInt(document.getElementById('f-stock').value) || 0;
+  const isbn = document.getElementById('f-isbn').value.trim();
+  const desc = document.getElementById('f-desc').value.trim();
+  if (!t || !a || !p) { toast('Please fill title, author and price.', true); return; }
+  books.unshift({id:nextId++, title:t, author:a, category:c, price:p, stock:s, isbn, desc, sold:0});
+  clearForm();
+  toast('Book added successfully!');
+}
+
+function clearForm() {
+  ['f-title','f-author','f-price','f-stock','f-isbn','f-desc'].forEach(i => document.getElementById(i).value = '');
+  document.getElementById('f-cat').value = CATS[0];
+}
+
+function renderManage() {
+  const q = document.getElementById('search-q').value.toLowerCase();
+  const filtered = books.filter(b =>
+    b.title.toLowerCase().includes(q) ||
+    b.author.toLowerCase().includes(q) ||
+    b.category.toLowerCase().includes(q)
+  );
+  document.getElementById('manage-count').textContent = `All Books (${filtered.length})`;
+  const tb = document.getElementById('manage-body');
+  if (!filtered.length) { tb.innerHTML = '<tr><td colspan="8" class="empty">No books found</td></tr>'; return; }
+  tb.innerHTML = filtered.map((b, i) => `
+    <tr>
+      <td style="color:var(--muted);font-size:11px">${i+1}</td>
+      <td style="font-weight:500;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${b.title}</td>
+      <td style="color:var(--muted)">${b.author}</td>
+      <td><span class="badge badge-cat">${b.category}</span></td>
+      <td>₹${b.price.toLocaleString()}</td>
+      <td>${b.stock}</td>
+      <td><span class="badge badge-sold">${b.sold}</span></td>
+      <td><button class="btn btn-danger btn-sm" onclick="deleteBook(${b.id})">Delete</button></td>
+    </tr>`).join('');
+}
+
+function deleteBook(id) {
+  books = books.filter(b => b.id !== id);
+  renderManage();
+  toast('Book removed.');
+}
+
+function updateSellDropdown() {
+  const sel = document.getElementById('sell-book-sel');
+  sel.innerHTML = '<option value="">-- Choose a book --</option>' +
+    books.map(b => `<option value="${b.id}">${b.title} (₹${b.price}) — ${b.stock} in stock</option>`).join('');
+  updateSellPreview();
+  renderSellHistory();
+}
+
+function updateSellPreview() {
+  const id = parseInt(document.getElementById('sell-book-sel').value);
+  const b = books.find(x => x.id === id);
+  const pv = document.getElementById('sell-preview');
+  if (!b) { pv.style.display = 'none'; document.getElementById('sell-total-display').value = ''; return; }
+  pv.style.display = 'block';
+  document.getElementById('sp-title').textContent = b.title;
+  document.getElementById('sp-meta').textContent = b.author + ' · ' + b.category + ' · ' + b.stock + ' in stock';
+  document.getElementById('sp-price').textContent = '₹' + b.price.toLocaleString();
+  calcTotal();
+}
+
+function calcTotal() {
+  const id = parseInt(document.getElementById('sell-book-sel').value);
+  const b = books.find(x => x.id === id);
+  const qty = parseInt(document.getElementById('sell-qty').value) || 0;
+  if (!b) { document.getElementById('sell-total-display').value = ''; return; }
+  document.getElementById('sell-total-display').value = '₹' + (b.price * qty).toLocaleString();
+}
+
+function recordSale() {
+  const id = parseInt(document.getElementById('sell-book-sel').value);
+  const b = books.find(x => x.id === id);
+  const qty = parseInt(document.getElementById('sell-qty').value) || 0;
+  const customer = document.getElementById('sell-customer').value.trim() || 'Walk-in';
+  if (!b) { toast('Please select a book.', true); return; }
+  if (qty < 1) { toast('Quantity must be at least 1.', true); return; }
+  if (qty > b.stock) { toast('Not enough stock! Only ' + b.stock + ' available.', true); return; }
+  b.stock -= qty;
+  b.sold  += qty;
+  const total = b.price * qty;
+  sales.unshift({bookId:b.id, title:b.title, customer, qty, total, date:todayStr()});
+  clearSell();
+  renderSellHistory();
+  toast('Sale recorded! ₹' + total.toLocaleString() + ' for ' + qty + ' book(s).');
+}
+
+function clearSell() {
+  document.getElementById('sell-book-sel').value = '';
+  document.getElementById('sell-qty').value = '1';
+  document.getElementById('sell-customer').value = '';
+  document.getElementById('sell-preview').style.display = 'none';
+  document.getElementById('sell-total-display').value = '';
+}
+
+function renderSellHistory() {
+  const tb = document.getElementById('sell-history-body');
+  if (!sales.length) { tb.innerHTML = '<tr><td colspan="5" class="empty">No sales recorded yet</td></tr>'; return; }
+  tb.innerHTML = sales.slice(0, 10).map(s => `
+    <tr>
+      <td style="font-weight:500">${s.title}</td>
+      <td style="color:var(--muted)">${s.customer}</td>
+      <td>${s.qty}</td>
+      <td style="font-weight:600;color:var(--primary)">₹${s.total.toLocaleString()}</td>
+      <td style="color:var(--muted);font-size:11px">${s.date}</td>
+    </tr>`).join('');
+}
+
+function updateDashboard() {
+  const today = todayStr(), month = monthStr(), year = yearStr();
+  let td=0, tdb=0, mn=0, mnb=0, yr=0, yrb=0, tot=0, totb=0;
+  for (const s of sales) {
+    tot += s.total; totb += s.qty;
+    if (s.date.startsWith(year))  { yr  += s.total; yrb  += s.qty; }
+    if (s.date.startsWith(month)) { mn  += s.total; mnb  += s.qty; }
+    if (s.date === today)          { td  += s.total; tdb  += s.qty; }
+  }
+  document.getElementById('s-today').textContent       = '₹' + td.toLocaleString();
+  document.getElementById('s-today-books').textContent  = tdb + ' books sold';
+  document.getElementById('s-month').textContent       = '₹' + mn.toLocaleString();
+  document.getElementById('s-month-books').textContent  = mnb + ' books sold';
+  document.getElementById('s-year').textContent        = '₹' + yr.toLocaleString();
+  document.getElementById('s-year-books').textContent   = yrb + ' books sold';
+  document.getElementById('s-total').textContent       = '₹' + tot.toLocaleString();
+  document.getElementById('s-total-books').textContent  = totb + ' books sold';
+
+  const rb = document.getElementById('recent-sales-body');
+  if (!sales.length) {
+    rb.innerHTML = '<tr><td colspan="4" class="empty">No sales yet</td></tr>';
+  } else {
+    rb.innerHTML = sales.slice(0, 5).map(s => `
+      <tr>
+        <td style="font-weight:500">${s.title}</td>
+        <td>${s.qty}</td>
+        <td style="font-weight:600;color:var(--primary)">₹${s.total.toLocaleString()}</td>
+        <td style="color:var(--muted);font-size:11px">${s.date}</td>
+      </tr>`).join('');
   }
 
-  // Show logged-in name
-  const adminName = localStorage.getItem('adminName') || 'Admin';
-  document.getElementById('welcome-msg').textContent =
-    'Welcome back, ' + adminName + ' — here\'s what\'s happening.';
-
-  function logout() {
-    fetch("/logout").catch(() => {});
-    localStorage.removeItem('adminLoggedIn');
-    localStorage.removeItem('adminName');
-    window.location.href = 'admin-login.html';
+  const catCount = {};
+  CATS.forEach(c => catCount[c] = 0);
+  books.forEach(b => { if (catCount[b.category] !== undefined) catCount[b.category]++; });
+  const maxC = Math.max(1, ...Object.values(catCount));
+  const bar = document.getElementById('catBar');
+  const active = CATS.filter(c => catCount[c] > 0);
+  if (!active.length) {
+    bar.innerHTML = '<div style="color:var(--muted);font-size:12px;text-align:center;padding:10px">No books yet</div>';
+  } else {
+    bar.innerHTML = active.map(c => `
+      <div class="bar-row">
+        <div class="bar-label">${c}</div>
+        <div class="bar-track"><div class="bar-fill" style="width:${Math.round(catCount[c]/maxC*100)}%;background:${CAT_COLORS[CATS.indexOf(c)]}"></div></div>
+        <div class="bar-count">${catCount[c]}</div>
+      </div>`).join('');
   }
 
-  window.onload = function () {
-    loadDashboard();
-    loadRequests();
-    loadChart();
-  };
+  const ib = document.getElementById('inv-body');
+  if (!books.length) {
+    ib.innerHTML = '<tr><td colspan="6" class="empty">No books yet</td></tr>';
+  } else {
+    ib.innerHTML = books.map(b => `
+      <tr>
+        <td style="font-weight:500">${b.title}</td>
+        <td style="color:var(--muted)">${b.author}</td>
+        <td><span class="badge badge-cat">${b.category}</span></td>
+        <td>₹${b.price.toLocaleString()}</td>
+        <td>${b.stock}</td>
+        <td><span class="badge badge-sold">${b.sold}</span></td>
+      </tr>`).join('');
+  }
+}
+
+function toast(msg, err = false) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show ' + (err ? 'toast-err' : 'toast-ok');
+  clearTimeout(t._t);
+  t._t = setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+updateDashboard();
 </script>
 </body>
 </html>
