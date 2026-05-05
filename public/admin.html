@@ -531,17 +531,18 @@ function updateDashboard() {
   books.forEach(b => { if (catCount[b.category] !== undefined) catCount[b.category]++; });
   const maxC = Math.max(1, ...Object.values(catCount));
   const bar = document.getElementById('catBar');
-  const active = CATS.filter(c => catCount[c] > 0);
-  if (!active.length) {
-    bar.innerHTML = '<div style="color:var(--muted);font-size:12px;text-align:center;padding:10px">No books yet</div>';
-  } else {
-    bar.innerHTML = active.map(c => `
-      <div class="bar-row">
-        <div class="bar-label">${c}</div>
-        <div class="bar-track"><div class="bar-fill" style="width:${Math.round(catCount[c]/maxC*100)}%;background:${CAT_COLORS[CATS.indexOf(c)]}"></div></div>
-        <div class="bar-count">${catCount[c]}</div>
-      </div>`).join('');
-  }
+  bar.innerHTML = CATS.map(c => `
+  <div class="bar-row">
+    <div class="bar-label">${c}</div>
+    <div class="bar-track">
+      <div class="bar-fill" 
+        style="width:${catCount[c] === 0 ? 5 : Math.round(catCount[c]/maxC*100)}%;
+        background:${CAT_COLORS[CATS.indexOf(c)]}">
+      </div>
+    </div>
+    <div class="bar-count">${catCount[c]}</div>
+  </div>
+`).join('');
 
   const ib = document.getElementById('inv-body');
   if (!books.length) {
